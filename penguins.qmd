@@ -1,6 +1,6 @@
 ---
 title: "Palmer Penguins"
-author: "Amber Camp"
+author: "Jordyn Luna"
 format: dashboard
 ---
 
@@ -12,7 +12,7 @@ library(palmerpenguins)
 penguins <- penguins
 ```
 
-# Plots?
+# Plots
 
 ## Row 1
 

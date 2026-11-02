@@ -1,0 +1,63 @@
+---
+title: "Candy"
+author: "Jordyn Luna"
+date: "11/2/2026"
+format: 
+  dashboard:
+    theme: sketchy
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(plotly)
+library(fivethirtyeight)
+
+candy <- fivethirtyeight::candy_rankings
+
+candy <- candy |> 
+  mutate(type = case_when(
+    chocolate & fruity ~ "both",
+    chocolate ~ "chocolate",
+    fruity ~ "fruity",
+    .default = "other"
+  ))
+
+count(candy, type)
+```
+
+## Row 1
+
+```{r}
+#| content: valuebox
+#| title: "Total Candies"
+
+list(
+  icon = "basket",
+  color = "warning",
+  value = nrow(candy)
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Number of Fruity Candies"
+
+list(
+  icon = "basket",
+  color = "warning",
+  value = sum(candy$type == "fruity")
+)
+
+# count(candy, type) 
+```
+
+## Row 2
+
+```{r}
+
+
+```
+
+```{r}
+
+```
