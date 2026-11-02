@@ -22,7 +22,7 @@ candy <- candy |>
     .default = "other"
   ))
 
-count(candy, type)
+# count(candy, type)
 ```
 
 ## Row 1
@@ -48,7 +48,7 @@ list(
   value = sum(candy$type == "fruity")
 )
 
-# count(candy, type) 
+
 ```
 
 ## Row 2
