@@ -4,7 +4,7 @@ author: "Jordyn Luna"
 date: "11/2/2026"
 format: 
   dashboard:
-    theme: sketchy
+    theme: superhero
 ---
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -32,31 +32,85 @@ candy <- candy |>
 #| title: "Total Candies"
 
 list(
-  icon = "basket",
-  color = "warning",
+  icon = "heart",
+  color = "Warning",
   value = nrow(candy)
 )
 ```
 
 ```{r}
-#| content: valuebox
-#| title: "Number of Fruity Candies"
-
-list(
-  icon = "basket",
-  color = "warning",
-  value = sum(candy$type == "fruity")
-)
+# #| content: valuebox
+# #| title: "Number of Fruity Candies"
+# 
+# list(
+#   icon = "heart",
+#   color = "warning",
+#   value = sum(candy$type == "fruity")
+# )
 
 
 ```
-
-## Row 2
 
 ```{r}
 
+bars_vs_bags <- candy |> 
+  mutate(preference = case_when(
+    bar & pluribus ~ "both",
+    bar ~ "bars",
+    pluribus ~ "bags of candy pieces",
+    .default = "other"
+  ))
+
+# count(bars_vs_bags, preference)
+```
+
+```{r}
+#| content: valuebox
+#| title: "bags of pieces of candy"
+
+list(
+  icon = "bag-heart",
+  color = "danger",
+  value = sum(bars_vs_bags$preference == "bags of candy pieces")
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "bars"
+
+list(
+  icon = "aspect-ratio",
+  color = "success",
+  value = sum(bars_vs_bags$preference == "bars")
+)
 
 ```
+
+```{r}
+#| content: valuebox
+#| title: "Other"
+
+list(
+  icon = "basket",
+  color = "primary",
+  value = sum(bars_vs_bags$preference == "bars")
+)
+
+```
+
+## Row 2 {.tabset}
+
+```{r}
+#| title: bars vs bags of candy
+
+bars_vs_bags_candy <- ggplot(data = bars_vs_bags, aes(x = preference, fill = preference)) +
+  geom_bar()
+
+ggplotly(bars_vs_bags_candy)
+```
+
+## Data Table
 
 ```{r}
 
