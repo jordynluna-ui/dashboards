@@ -7,6 +7,8 @@ format:
     theme: superhero
 ---
 
+# Plot
+
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(plotly)
@@ -33,7 +35,7 @@ candy <- candy |>
 
 list(
   icon = "heart",
-  color = "Warning",
+  color = "warning",
   value = nrow(candy)
 )
 ```
@@ -93,7 +95,7 @@ list(
 
 list(
   icon = "basket",
-  color = "primary",
+  color = "info",
   value = sum(bars_vs_bags$preference == "bars")
 )
 
@@ -110,8 +112,13 @@ bars_vs_bags_candy <- ggplot(data = bars_vs_bags, aes(x = preference, fill = pre
 ggplotly(bars_vs_bags_candy)
 ```
 
-## Data Table
+# Data Table
 
 ```{r}
+bars_vs_bags <- bars_vs_bags |> 
+  select(competitorname, bar, pluribus, preference)
 
+knitr::kable(bars_vs_bags) 
+  
+count(bars_vs_bags, preference)
 ```

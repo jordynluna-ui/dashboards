@@ -1,11 +1,19 @@
 ---
-title: "dashboards"
+title: "Dashboards"
+author: "Jordyn Luna"
+format: html
 ---
 
-This is a Quarto website.
+## Dashboard Projects:
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+[Candy Dashboard](https://jordynluna-ui.github.io/dashboards/candy.html)
 
-```{r}
-1 + 1
-```
+Examines the 538 Candy Ranking data from 2017.
+
+**Bars vs. Bags**
+
+Do people prefer candy bars or bags of small pieces?
+
+[Penguins Dashboard](https://jordynluna-ui.github.io/dashboards/penguins.html)
+
+Uses the palmerpenguins package and offers an exploratory look at the data.

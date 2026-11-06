@@ -7,8 +7,19 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Home
-      - about.qmd
+      - href: https://jordynluna-ui.github.io/about.html
+        text: About Me
+      - href: https://jordynluna-ui.github.io/resume.html
+        text: Resume
+      - href: https://jordynluna-ui.github.io/dashboards
+        text: Dashboard Projects
+      - icon: github
+        href: http://github.com/jordynluna-ui
+        target: blank
+    right:
+      - icon: house
+        href: https://jordynluna-ui.github.io
+        target: blank
 
 format:
   html:

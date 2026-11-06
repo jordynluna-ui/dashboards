@@ -9,8 +9,15 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "dashboards",
+    "title": "Dashboards",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "Candy Dashboard\nExamines the 538 Candy Ranking data from 2017.\nBars vs. Bags\nDo people prefer candy bars or bags of small pieces?\nPenguins Dashboard\nUses the palmerpenguins package and offers an exploratory look at the data."
+  },
+  {
+    "objectID": "index.html#dashboard-projects",
+    "href": "index.html#dashboard-projects",
+    "title": "Dashboards",
+    "section": "",
+    "text": "Candy Dashboard\nExamines the 538 Candy Ranking data from 2017.\nBars vs. Bags\nDo people prefer candy bars or bags of small pieces?\nPenguins Dashboard\nUses the palmerpenguins package and offers an exploratory look at the data."
   }
 ]
