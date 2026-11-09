@@ -1,1 +1,5 @@
 /* css styles */
+.navbar .nav-link:hover,
+.navbar .navbar-brand:hover {
+  color: black
+}

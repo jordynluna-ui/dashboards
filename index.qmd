@@ -13,7 +13,7 @@ Examines the 538 Candy Ranking data from 2017.
 
 **Bars vs. Bags**
 
-Do people prefer candy bars or bags of small pieces?
+Do people prefer candy bars or bags of candy pieces?
 
 [Penguins Dashboard](https://jordynluna-ui.github.io/dashboards/penguins.html)
 

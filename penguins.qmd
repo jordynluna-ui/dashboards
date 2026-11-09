@@ -1,7 +1,9 @@
 ---
 title: "Palmer Penguins"
-author: "Jordyn Luna"
-format: dashboard
+format: 
+  dashboard:
+    css: styles.css
+    theme: superhero
 ---
 
 ```{r}

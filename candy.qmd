@@ -3,6 +3,7 @@ title: "Candy"
 date: "11/2/2026"
 format: 
   dashboard:
+    css: styles.css
     theme: superhero
 ---
 
@@ -114,11 +115,13 @@ ggplotly(bars_vs_bags_candy, tooltip = c("x","count"))
 
 # Data Table
 
+This table shows which brand sells their candy as a bar, a bag with pieces of candy, or a different way.
+
 ```{r}
 bars_vs_bags <- bars_vs_bags |> 
   select(competitorname, bar, pluribus, preference)
 
 knitr::kable(bars_vs_bags) 
   
-count(bars_vs_bags, preference)
+# count(bars_vs_bags, preference)
 ```
