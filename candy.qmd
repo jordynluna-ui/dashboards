@@ -1,6 +1,5 @@
 ---
 title: "Candy"
-author: "Jordyn Luna"
 date: "11/2/2026"
 format: 
   dashboard:
@@ -68,7 +67,7 @@ bars_vs_bags <- candy |>
 
 ```{r}
 #| content: valuebox
-#| title: "bags of pieces of candy"
+#| title: "Bags of Pieces of Candy"
 
 list(
   icon = "bag-heart",
@@ -79,7 +78,7 @@ list(
 
 ```{r}
 #| content: valuebox
-#| title: "bars"
+#| title: "Bars"
 
 list(
   icon = "aspect-ratio",
@@ -96,7 +95,7 @@ list(
 list(
   icon = "basket",
   color = "info",
-  value = sum(bars_vs_bags$preference == "bars")
+  value = sum(bars_vs_bags$preference == "other")
 )
 
 ```
@@ -107,9 +106,10 @@ list(
 #| title: bars vs bags of candy
 
 bars_vs_bags_candy <- ggplot(data = bars_vs_bags, aes(x = preference, fill = preference)) +
-  geom_bar()
+  geom_bar() +
+  labs(x = "Candy Preference", y = "Number of Responses", title = "Bars vs Bags of Candy")
 
-ggplotly(bars_vs_bags_candy)
+ggplotly(bars_vs_bags_candy, tooltip = c("x","count"))
 ```
 
 # Data Table

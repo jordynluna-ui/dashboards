@@ -2,6 +2,7 @@
 title: "Dashboards"
 author: "Jordyn Luna"
 format: html
+toc: false
 ---
 
 ## Dashboard Projects:
