@@ -1,0 +1,192 @@
+---
+title: "NCAA D1 Women's Basketball"
+format: 
+  dashboard:
+    css: styles.css
+    theme: superhero
+---
+
+```{r}
+# install.packages("wehoop")
+library(wehoop)
+library(dplyr)
+library(tidyverse)
+library(plotly)
+
+wbb <- load_wbb_team_box(seasons = 2024:2025)
+
+#glimpse(wbb)
+#nrow(wbb)
+
+# install.packages("sportsdataverse", repos = c("https://sportsdataverse.r-universe.dev", getOption("repos")))
+
+wbb <- wbb |>
+  mutate(conference = case_when(
+    team_display_name %in% c("UConn Huskies", "Creighton Bluejays",
+                             "Marquette Golden Eagles", "Villanova Wildcats", "Seton Hall Pirates", "St. John's Red Storm", "Providence Friars", "Georgetwon Hoyas", "Butler Bulldogs", "DePaul Blue Demons", "Xavier Musketeers") ~ "Big East",
+    team_display_name %in% c("South Carolina Gamecocks", "LSU Tigers",
+                             "Tennessee Lady Volunteers", "Texas Longhorns", "Vanderbuilt Commodores", "Oklahoma Sooners", "Kentucky Wildcats", "Georgia Lady Bulldogs", "Ole Miss Rebels", "Alabama Crimson Tide", "Texas A&M Aggies", "Mississippi State Bulldogs", "Florida Gators", "Missouri Tigers", "Auburn Tigers", "Arkansas Razorbacks") ~ "SEC",
+    team_display_name %in% c("Iowa Hawkeyes", "Ohio State Buckeyes",
+                             "Indiana Hoosiers", "UCLA Bruins", "Michigan Wolverines", "Minnesota Golden Gophers", "Maryland Terrapins", "Michigan State Spartans", "Washington Huskies", "Illinois Fighting Illini", "USC Trojans", "Oregon Ducks", "Nebraska Cornhuskers", "Wisconsin Badgers", "Purdue Boilmakers", "Penn State Lady Lions", "Northwestern Wildcats", "Rutgers Scarlet Knights") ~ "Big Ten",
+    team_display_name %in% c("Duke Blue Devils", "Louisville Cardinals", "North Carolina Tar Heels", "NC State Wolfpack", "Syracuse Orange", "Virginia Tech Hokies", "Notre Dame Fighting Irish", "Virginia Cavaliers", "Clemson Tigers", "California Golden Bears", "Stanford Cardinal", "Miami Hurricanes", "Georgia Tech Yellow Jackets", "Florida State Seminoles", "Wake Forest Demon Deacons", "Saint Mary's Gaels", "Pittsburgh Panthers", "Boston College Eagles") ~ "ACC",
+    team_display_name %in% c("TCU Horned Frogs", "West Virginia Mountaineers", "Baylor Bears", "Texas Tech Lady Raiders", "Oklahoma State Cowgirls", "Colorado Buffaloes", "Iowa State Cyclones", "Utah Utes", "Arizona State Sun Devils", "BYU Cougars", "Kansas Jayhawks", "Kansas State Wildcats", "Cincinnati Bearcats", "Arizona Wildcats", "UCF Knights", "Houston Cougars") ~ "Big 12",
+    TRUE ~ "Other"
+  ))
+
+wbb <- wbb |>
+  group_by(season, team_display_name) |>
+  mutate(games_won = sum(team_winner, na.rm = TRUE)) |>
+  ungroup()
+# count(wbb)
+```
+
+## Plots {.tabset}
+
+```{r}
+#| title: Big East
+
+wbb_2025_Big_East <- wbb |>
+  filter(season == 2025, conference == "Big East") |>
+  group_by(team_display_name) |>
+  mutate(
+    games_won = sum(team_winner, na.rm = TRUE),
+    games_lost = sum(!team_winner, na.rm = TRUE),
+    team_label = paste0(team_display_name, " (", games_won, "-", games_lost, ")")
+  ) |>
+  ungroup()
+
+wbb_win_2025 <- wbb_2025_Big_East |>
+  ggplot(aes(x = game_date,
+             y = reorder(team_label, games_won),
+             color = team_winner,
+             text = paste("Opponent:", opponent_team_display_name,
+                          "<br>Result:", ifelse(team_winner, "Won", "Lost"),
+                          "<br>Date:", game_date,
+                          "<br>Record:", games_won, "-", games_lost))) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+                     labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
+  labs(x = "Game date", y = NULL, color = "Result")
+
+ggplotly(wbb_win_2025, tooltip = "text")
+
+```
+
+```{r}
+#| title: SEC
+
+wbb_2025_SEC <- wbb |>
+  filter(season == 2025, conference == "SEC") |>
+  group_by(team_display_name) |>
+  mutate(
+    games_won = sum(team_winner, na.rm = TRUE),
+    games_lost = sum(!team_winner, na.rm = TRUE),
+    team_label = paste0(team_display_name, " (", games_won, "-", games_lost, ")")
+  ) |>
+  ungroup()
+
+wbb_win_2025 <- wbb_2025_SEC |>
+  ggplot(aes(x = game_date,
+             y = reorder(team_label, games_won),
+             color = team_winner,
+             text = paste("Opponent:", opponent_team_display_name,
+                          "<br>Result:", ifelse(team_winner, "Won", "Lost"),
+                          "<br>Date:", game_date,
+                          "<br>Record:", games_won, "-", games_lost))) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+                     labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
+  labs(x = "Game date", y = NULL, color = "Result")
+
+ggplotly(wbb_win_2025, tooltip = "text")
+```
+
+```{r}
+#| title: Big Ten
+
+wbb_2025_Big_Ten <- wbb |>
+  filter(season == 2025, conference == "Big Ten") |>
+  group_by(team_display_name) |>
+  mutate(
+    games_won = sum(team_winner, na.rm = TRUE),
+    games_lost = sum(!team_winner, na.rm = TRUE),
+    team_label = paste0(team_display_name, " (", games_won, "-", games_lost, ")")
+  ) |>
+  ungroup()
+
+wbb_win_2025 <- wbb_2025_Big_Ten |>
+  ggplot(aes(x = game_date,
+             y = reorder(team_label, games_won),
+             color = team_winner,
+             text = paste("Opponent:", opponent_team_display_name,
+                          "<br>Result:", ifelse(team_winner, "Won", "Lost"),
+                          "<br>Date:", game_date,
+                          "<br>Record:", games_won, "-", games_lost))) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+                     labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
+  labs(x = "Game date", y = NULL, color = "Result")
+
+ggplotly(wbb_win_2025, tooltip = "text")
+
+
+```
+
+```{r}
+#| title: ACC
+
+wbb_2025_ACC <- wbb |>
+  filter(season == 2025, conference == "ACC") |>
+  group_by(team_display_name) |>
+  mutate(
+    games_won = sum(team_winner, na.rm = TRUE),
+    games_lost = sum(!team_winner, na.rm = TRUE),
+    team_label = paste0(team_display_name, " (", games_won, "-", games_lost, ")")
+  ) |>
+  ungroup()
+
+wbb_win_2025 <- wbb_2025_ACC |>
+  ggplot(aes(x = game_date,
+             y = reorder(team_label, games_won),
+             color = team_winner,
+             text = paste("Opponent:", opponent_team_display_name,
+                          "<br>Result:", ifelse(team_winner, "Won", "Lost"),
+                          "<br>Date:", game_date,
+                          "<br>Record:", games_won, "-", games_lost))) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+                     labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
+  labs(x = "Game date", y = NULL, color = "Result")
+
+ggplotly(wbb_win_2025, tooltip = "text")
+
+```
+
+```{r}
+#| title: Big 12
+
+wbb_2025_Big_12 <- wbb |>
+  filter(season == 2025, conference == "Big 12") |>
+  group_by(team_display_name) |>
+  mutate(
+    games_won = sum(team_winner, na.rm = TRUE),
+    games_lost = sum(!team_winner, na.rm = TRUE),
+    team_label = paste0(team_display_name, " (", games_won, "-", games_lost, ")")
+  ) |>
+  ungroup()
+
+wbb_win_2025 <- wbb_2025_Big_12 |>
+  ggplot(aes(x = game_date,
+             y = reorder(team_label, games_won),
+             color = team_winner,
+             text = paste("Opponent:", opponent_team_display_name,
+                          "<br>Result:", ifelse(team_winner, "Won", "Lost"),
+                          "<br>Date:", game_date,
+                          "<br>Record:", games_won, "-", games_lost))) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+                     labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
+  labs(x = "Game date", y = NULL, color = "Result")
+
+ggplotly(wbb_win_2025, tooltip = "text")
+```
