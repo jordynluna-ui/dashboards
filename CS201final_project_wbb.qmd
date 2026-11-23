@@ -4,6 +4,7 @@ format:
   dashboard:
     css: styles.css
     theme: superhero
+    scrolling: true
 ---
 
 ```{r}
@@ -12,6 +13,7 @@ library(wehoop)
 library(dplyr)
 library(tidyverse)
 library(plotly)
+library(broom)
 
 wbb <- load_wbb_team_box(seasons = 2024:2025)
 
@@ -38,9 +40,19 @@ wbb <- wbb |>
   mutate(games_won = sum(team_winner, na.rm = TRUE)) |>
   ungroup()
 
+wbb <- wbb |> 
+  mutate(
+    season_type = case_when(
+      season_type == 2 ~ "Regular Season",
+      season_type == 3 ~ "Post-season",
+      .default = as.character(season_type)
+    )
+  )
 ```
 
-## Plots {.tabset}
+# Conferences
+
+## Plots1 {.tabset}
 
 ```{r}
 #| title: Big East
@@ -62,7 +74,8 @@ wbb_win_2025 <- wbb_2025_Big_East |>
              text = paste("Opponent:", opponent_team_display_name,
                           "<br>Result:", ifelse(team_winner, "Won", "Lost"),
                           "<br>Date:", game_date,
-                          "<br>Record:", games_won, "-", games_lost))) +
+                          "<br>Record:", games_won, "-", games_lost,
+                          "<br>Season"))) +
   geom_point(size = 2) +
   scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
                      labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
@@ -191,80 +204,103 @@ wbb_win_2025 <- wbb_2025_Big_12 |>
 ggplotly(wbb_win_2025, tooltip = "text")
 ```
 
-## What statistic is mostly connected to winning?
+# What statistics in mostly connected to winning?
 
 ```{r}
-
+# Creating a effective field goal percentage column
 wbb <- wbb |> 
   mutate(effective_fg_pct = (field_goals_made + 0.5 * three_point_field_goals_made) / field_goals_attempted)
-
 ```
+
+## Row
 
 ```{r}
 #| title: Shooting Efficiency Percentage
 
-shooting_efficiency_pct <- wbb |> 
-  filter(team_display_name == "TCU Horned Frogs") |> 
+wbb |>
+  filter(season == 2025) |>
   ggplot(aes(x = team_winner, y = effective_fg_pct, fill = team_winner)) +
   geom_boxplot() +
-  theme_bw()
-shooting_efficiency_pct
+  scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
+  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
+  labs(x = NULL, y = "Effective FG%", title = "Shooting efficiency") +
+  theme_bw() +
+  theme(legend.position = "none")
 ```
 
 ```{r}
-#| title: Turnovers relating to winning
+#| title: Turnovers
 
-turnovers_to_winning <- wbb |> 
-  filter(team_display_name == "TCU Horned Frogs") |> 
+wbb |>
+  filter(season == 2025) |>
   ggplot(aes(x = team_winner, y = turnovers, fill = team_winner)) +
   geom_boxplot() +
-  theme_bw()
-turnovers_to_winning
+  scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
+  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
+  labs(x = NULL, y = "Turnovers", title = "Turnovers") +
+  theme_bw() +
+  theme(legend.position = "none")
 ```
 
-```{r}
-#| title: 3 pointers to winning
-
-three_pointers_winning <- wbb |> 
-  filter(season == 2025) |> 
-  ggplot(aes(x = team_winner, y = three_point_field_goal_pct, fill = team_winner)) +
-  geom_boxplot() +
-  facet_wrap(~conference)
-theme_bw()
-three_pointers_winning
-```
+## Row
 
 ```{r}
-#| title: Rebounds to winning
-
-rebounds_winning <- wbb |> 
-  filter(team_display_name == "TCU Horned Frogs") |> 
+#| title: Rebounds
+#| fig-width: 7
+#| fig-height: 5
+wbb |>
+  filter(season == 2025) |>
   ggplot(aes(x = team_winner, y = total_rebounds, fill = team_winner)) +
   geom_boxplot() +
-theme_bw()
-rebounds_winning
+  scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
+  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
+  labs(x = NULL, y = "Rebound", title = "Rebounds") +
+  theme_bw() +
+  theme(legend.position = "none")
 ```
 
+
 ```{r}
+#| title: Assists
 
-stats_vs_winning <- wbb |>
+wbb |>
   filter(season == 2025) |>
-  select(team_winner, effective_fg_pct, turnovers, total_rebounds, assists, steals) |>
-  pivot_longer(-team_winner, names_to = "stat", values_to = "value") |>
-  group_by(stat) |>
-  mutate(z = as.numeric(scale(value))) |>
-  group_by(stat, team_winner) |>
-  summarise(avg_z = mean(z, na.rm = TRUE), .groups = "drop") |>
-  pivot_wider(names_from = team_winner, values_from = avg_z) |>
-  mutate(gap = `TRUE` - `FALSE`)
+  ggplot(aes(x = team_winner, y = assists, fill = team_winner)) +
+  geom_boxplot() +
+  scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
+  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
+  labs(x = NULL, y = "Assists", title = "Assists") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
 
-ggplot(stats_vs_winning,
-       aes(x = reorder(stat, abs(gap)), y = gap, fill = gap > 0)) +
-  geom_col() +
-  coord_flip() +
-  scale_fill_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
-                    labels = c("TRUE" = "Higher in wins", "FALSE" = "Higher in losses")) +
-  labs(x = NULL, y = "Difference between wins and losses (standardized)",
-       fill = NULL, title = "Which stats are most connected to winning?") +
-  theme_bw()
+## Row
+
+```{r}
+#| title: Steals
+
+wbb |>
+  filter(season == 2025) |>
+  ggplot(aes(x = team_winner, y = steals, fill = team_winner)) +
+  geom_boxplot() +
+  scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
+  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
+  labs(x = NULL, y = "Steals", title = "Steals") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+
+
+```{r}
+wbb |>
+  filter(season == 2025) |>
+  group_by(team_winner) |>
+  summarise(
+    avg_efg = mean(effective_fg_pct, na.rm = TRUE),
+    avg_turnovers = mean(turnovers, na.rm = TRUE),
+    avg_rebounds = mean(total_rebounds, na.rm = TRUE),
+    avg_assists = mean(assists, na.rm = TRUE),
+    avg_steals = mean(steals, na.rm = TRUE)
+  )
 ```
