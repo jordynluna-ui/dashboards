@@ -1,5 +1,5 @@
 ---
-title: "NCAA D1 Women's Basketball Season 2025"
+title: "NCAA D1 Women's Basketball Data"
 format: 
   dashboard:
     css: styles.css
@@ -16,6 +16,8 @@ library(plotly)
 library(broom)
 
 wbb <- load_wbb_team_box(seasons = 2024:2025)
+
+wbb_seasons <- load_wbb_team_box(seasons = 2006:2026)
 
 #glimpse(wbb)
 #nrow(wbb)
@@ -50,9 +52,11 @@ wbb <- wbb |>
   )
 ```
 
-# Conferences
+# Conferences 
 
-## Plots1 {.tabset}
+## Plots {.tabset}
+
+Each team's record from the 2024-2025 season
 
 ```{r}
 #| title: Big East
@@ -204,7 +208,7 @@ wbb_win_2025 <- wbb_2025_Big_12 |>
 ggplotly(wbb_win_2025, tooltip = "text")
 ```
 
-# What statistics in mostly connected to winning?
+# Game Outcome Based on Stats 
 
 ```{r}
 # Creating a effective field goal percentage column
@@ -259,7 +263,6 @@ wbb |>
   theme(legend.position = "none")
 ```
 
-
 ```{r}
 #| title: Assists
 
@@ -290,8 +293,6 @@ wbb |>
   theme(legend.position = "none")
 ```
 
-
-
 ```{r}
 wbb |>
   filter(season == 2025) |>
@@ -303,4 +304,46 @@ wbb |>
     avg_assists = mean(assists, na.rm = TRUE),
     avg_steals = mean(steals, na.rm = TRUE)
   )
+```
+
+# Champions
+
+```{r}
+
+# Load schedule for seasons
+schedule <- load_wbb_schedule(seasons = 2008:2026)
+
+# Filter for the National Championship game and identify the winner
+champions <- schedule |> 
+  filter(
+    season_type == 3,
+    grepl("National Championship", notes_headline, ignore.case = TRUE)
+  ) |> 
+  mutate(
+    champion = ifelse(home_winner, home_display_name, away_display_name),
+    runner_up = ifelse(home_winner, away_display_name, home_display_name),
+    final_score = paste0(
+      pmax(home_score, away_score), "-", pmin(home_score, away_score)
+    )
+  ) %>%
+  select(season, game_date, champion, runner_up, final_score, notes_headline)
+
+champions
+
+```
+
+```{r}
+champ_games <- load_wbb_schedule(seasons = 2008:2026) |> 
+  filter(season_type == 3,
+         grepl("National Championship", notes_headline, ignore.case = TRUE)) |> 
+  mutate(champion = ifelse(home_winner, home_display_name, away_display_name)) |> 
+  select(season, game_id, game_date, champion, home_display_name, away_display_name)
+
+champ_ids <- champ_games$game_id
+
+
+
+champ_team_box <- load_wbb_team_box(season = 2008:2026) |> 
+  filter(game_id %in% champ_ids) |> 
+  left_join(champ_games %>% select (game_id, champion), by = "game_id")
 ```
