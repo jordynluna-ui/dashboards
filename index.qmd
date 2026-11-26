@@ -18,3 +18,7 @@ Do people prefer candy bars or bags of candy pieces?
 [Penguins Dashboard](https://jordynluna-ui.github.io/dashboards/penguins.html)
 
 Uses the palmerpenguins package and offers an exploratory look at the data.
+
+[NCAA D1 Women's Basketball Dashboard](https://jordynluna-ui.github.io/dashboards/CS201final_project_wbb.html)
+
+Uses the SportsDataverse, wehoop R package. Explores the 2025-2026 women's basketball season and how 3-point shooting has changed over the seasons.

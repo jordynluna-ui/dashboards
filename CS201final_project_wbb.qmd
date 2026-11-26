@@ -15,12 +15,7 @@ library(tidyverse)
 library(plotly)
 library(broom)
 
-wbb <- load_wbb_team_box(seasons = 2024:2025)
-
-wbb_seasons <- load_wbb_team_box(seasons = 2006:2026)
-
-#glimpse(wbb)
-#nrow(wbb)
+wbb <- load_wbb_team_box(seasons = 2008:2026)
 
 # install.packages("sportsdataverse", repos = c("https://sportsdataverse.r-universe.dev", getOption("repos")))
 
@@ -50,19 +45,22 @@ wbb <- wbb |>
       .default = as.character(season_type)
     )
   )
+
+wbb <- wbb|> 
+  select(-c(game_date_time, team_id, team_uid, team_slug, team_location, team_name, team_color, team_alternate_color, team_logo, team_turnovers, technical_fouls, total_technical_fouls, total_turnovers, opponent_team_id, opponent_team_uid, opponent_team_slug, opponent_team_location, opponent_team_name, opponent_team_color, opponent_team_alternate_color, opponent_team_logo))
 ```
 
-# Conferences 
+# Conferences
+
+Teams overall records from the 2025-2026 season in the top 5 conferences in womens basketball
 
 ## Plots {.tabset}
-
-Each team's record from the 2024-2025 season
 
 ```{r}
 #| title: Big East
 
-wbb_2025_Big_East <- wbb |>
-  filter(season == 2025, conference == "Big East") |>
+wbb_2026_Big_East <- wbb |>
+  filter(season == 2026, conference == "Big East") |>
   group_by(team_display_name) |>
   mutate(
     games_won = sum(team_winner, na.rm = TRUE),
@@ -71,7 +69,7 @@ wbb_2025_Big_East <- wbb |>
   ) |>
   ungroup()
 
-wbb_win_2025 <- wbb_2025_Big_East |>
+wbb_win_2026 <- wbb_2026_Big_East |>
   ggplot(aes(x = game_date,
              y = reorder(team_label, games_won),
              color = team_winner,
@@ -79,21 +77,22 @@ wbb_win_2025 <- wbb_2025_Big_East |>
                           "<br>Result:", ifelse(team_winner, "Won", "Lost"),
                           "<br>Date:", game_date,
                           "<br>Record:", games_won, "-", games_lost,
-                          "<br>Season"))) +
+                          "<br>Season:", season_type))) +
   geom_point(size = 2) +
-  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+  scale_color_manual(values = c("TRUE" = "#00BFC4", "FALSE" = "#F8766D"),
                      labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
-  labs(x = "Game date", y = NULL, color = "Result")
+  labs(x = "Game date", y = NULL, color = "Result") +
+  theme(legend.position = "none")
 
-ggplotly(wbb_win_2025, tooltip = "text")
+ggplotly(wbb_win_2026, tooltip = "text")
 
 ```
 
 ```{r}
 #| title: SEC
 
-wbb_2025_SEC <- wbb |>
-  filter(season == 2025, conference == "SEC") |>
+wbb_2026_SEC <- wbb |>
+  filter(season == 2026, conference == "SEC") |>
   group_by(team_display_name) |>
   mutate(
     games_won = sum(team_winner, na.rm = TRUE),
@@ -102,27 +101,29 @@ wbb_2025_SEC <- wbb |>
   ) |>
   ungroup()
 
-wbb_win_2025 <- wbb_2025_SEC |>
+wbb_win_2026 <- wbb_2026_SEC |>
   ggplot(aes(x = game_date,
              y = reorder(team_label, games_won),
              color = team_winner,
              text = paste("Opponent:", opponent_team_display_name,
                           "<br>Result:", ifelse(team_winner, "Won", "Lost"),
                           "<br>Date:", game_date,
-                          "<br>Record:", games_won, "-", games_lost))) +
+                          "<br>Record:", games_won, "-", games_lost,
+                          "<br>Season:", season_type))) +
   geom_point(size = 2) +
-  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+  scale_color_manual(values = c("TRUE" = "#00BFC4", "FALSE" = "#F8766D"),
                      labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
-  labs(x = "Game date", y = NULL, color = "Result")
+  labs(x = "Game date", y = NULL, color = "Result") +
+  theme(legend.position = "none")
 
-ggplotly(wbb_win_2025, tooltip = "text")
+ggplotly(wbb_win_2026, tooltip = "text")
 ```
 
 ```{r}
 #| title: Big Ten
 
-wbb_2025_Big_Ten <- wbb |>
-  filter(season == 2025, conference == "Big Ten") |>
+wbb_2026_Big_Ten <- wbb |>
+  filter(season == 2026, conference == "Big Ten") |>
   group_by(team_display_name) |>
   mutate(
     games_won = sum(team_winner, na.rm = TRUE),
@@ -131,20 +132,22 @@ wbb_2025_Big_Ten <- wbb |>
   ) |>
   ungroup()
 
-wbb_win_2025 <- wbb_2025_Big_Ten |>
+wbb_win_2026 <- wbb_2026_Big_Ten |>
   ggplot(aes(x = game_date,
              y = reorder(team_label, games_won),
              color = team_winner,
              text = paste("Opponent:", opponent_team_display_name,
                           "<br>Result:", ifelse(team_winner, "Won", "Lost"),
                           "<br>Date:", game_date,
-                          "<br>Record:", games_won, "-", games_lost))) +
+                          "<br>Record:", games_won, "-", games_lost,
+                          "<br>Season:", season_type))) +
   geom_point(size = 2) +
-  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+  scale_color_manual(values = c("TRUE" = "#00BFC4", "FALSE" = "#F8766D"),
                      labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
-  labs(x = "Game date", y = NULL, color = "Result")
+  labs(x = "Game date", y = NULL, color = "Result") +
+  theme(legend.position = "none")
 
-ggplotly(wbb_win_2025, tooltip = "text")
+ggplotly(wbb_win_2026, tooltip = "text")
 
 
 ```
@@ -152,8 +155,8 @@ ggplotly(wbb_win_2025, tooltip = "text")
 ```{r}
 #| title: ACC
 
-wbb_2025_ACC <- wbb |>
-  filter(season == 2025, conference == "ACC") |>
+wbb_2026_ACC <- wbb |>
+  filter(season == 2026, conference == "ACC") |>
   group_by(team_display_name) |>
   mutate(
     games_won = sum(team_winner, na.rm = TRUE),
@@ -162,28 +165,30 @@ wbb_2025_ACC <- wbb |>
   ) |>
   ungroup()
 
-wbb_win_2025 <- wbb_2025_ACC |>
+wbb_win_2026 <- wbb_2026_ACC |>
   ggplot(aes(x = game_date,
              y = reorder(team_label, games_won),
              color = team_winner,
              text = paste("Opponent:", opponent_team_display_name,
                           "<br>Result:", ifelse(team_winner, "Won", "Lost"),
                           "<br>Date:", game_date,
-                          "<br>Record:", games_won, "-", games_lost))) +
+                          "<br>Record:", games_won, "-", games_lost,
+                          "<br>Season:", season_type))) +
   geom_point(size = 2) +
-  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+  scale_color_manual(values = c("TRUE" = "#00BFC4", "FALSE" = "#F8766D"),
                      labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
-  labs(x = "Game date", y = NULL, color = "Result")
+  labs(x = "Game date", y = NULL, color = "Result") +
+  theme(legend.position = "none")
 
-ggplotly(wbb_win_2025, tooltip = "text")
+ggplotly(wbb_win_2026, tooltip = "text")
 
 ```
 
 ```{r}
 #| title: Big 12
 
-wbb_2025_Big_12 <- wbb |>
-  filter(season == 2025, conference == "Big 12") |>
+wbb_2026_Big_12 <- wbb |>
+  filter(season == 2026, conference == "Big 12") |>
   group_by(team_display_name) |>
   mutate(
     games_won = sum(team_winner, na.rm = TRUE),
@@ -192,23 +197,27 @@ wbb_2025_Big_12 <- wbb |>
   ) |>
   ungroup()
 
-wbb_win_2025 <- wbb_2025_Big_12 |>
+wbb_win_2026 <- wbb_2026_Big_12 |>
   ggplot(aes(x = game_date,
              y = reorder(team_label, games_won),
              color = team_winner,
              text = paste("Opponent:", opponent_team_display_name,
                           "<br>Result:", ifelse(team_winner, "Won", "Lost"),
                           "<br>Date:", game_date,
-                          "<br>Record:", games_won, "-", games_lost))) +
+                          "<br>Record:", games_won, "-", games_lost,
+                          "<br>Season:", season_type))) +
   geom_point(size = 2) +
-  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "tomato"),
+  scale_color_manual(values = c("TRUE" = "#00BFC4", "FALSE" = "#F8766D"),
                      labels = c("TRUE" = "Won", "FALSE" = "Lost")) +
-  labs(x = "Game date", y = NULL, color = "Result")
+  labs(x = "Game date", y = NULL, color = "Result") +
+  theme(legend.position = "none")
 
-ggplotly(wbb_win_2025, tooltip = "text")
+ggplotly(wbb_win_2026, tooltip = "text")
 ```
 
 # Game Outcome Based on Stats 
+
+The average in each stats category for the 2025-2026 season
 
 ```{r}
 # Creating a effective field goal percentage column
@@ -222,59 +231,53 @@ wbb <- wbb |>
 #| title: Shooting Efficiency Percentage
 
 wbb |>
-  filter(season == 2025) |>
+  filter(season == 2026) |>
   ggplot(aes(x = team_winner, y = effective_fg_pct, fill = team_winner)) +
   geom_boxplot() +
-  scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
-  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
-  labs(x = NULL, y = "Effective FG%", title = "Shooting efficiency") +
-  theme_bw() +
-  theme(legend.position = "none")
+  scale_x_discrete(labels = c("FALSE" = "Games Lost", "TRUE" = "Games Won")) +
+  labs(x = NULL, y = "Effective FG%", title = "Shooting Efficiency") +
+  theme_bw() 
 ```
 
 ```{r}
 #| title: Turnovers
 
 wbb |>
-  filter(season == 2025) |>
+  filter(season == 2026) |>
   ggplot(aes(x = team_winner, y = turnovers, fill = team_winner)) +
   geom_boxplot() +
   scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
-  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
   labs(x = NULL, y = "Turnovers", title = "Turnovers") +
-  theme_bw() +
-  theme(legend.position = "none")
+  theme_bw()
+
 ```
 
 ## Row
 
 ```{r}
 #| title: Rebounds
-#| fig-width: 7
-#| fig-height: 5
+
 wbb |>
-  filter(season == 2025) |>
+  filter(season == 2026) |>
   ggplot(aes(x = team_winner, y = total_rebounds, fill = team_winner)) +
   geom_boxplot() +
   scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
-  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
   labs(x = NULL, y = "Rebound", title = "Rebounds") +
-  theme_bw() +
-  theme(legend.position = "none")
+  theme_bw()
+ 
 ```
 
 ```{r}
 #| title: Assists
 
 wbb |>
-  filter(season == 2025) |>
+  filter(season == 2026) |>
   ggplot(aes(x = team_winner, y = assists, fill = team_winner)) +
   geom_boxplot() +
   scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
-  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
   labs(x = NULL, y = "Assists", title = "Assists") +
-  theme_bw() +
-  theme(legend.position = "none")
+  theme_bw()
+
 ```
 
 ## Row
@@ -283,19 +286,18 @@ wbb |>
 #| title: Steals
 
 wbb |>
-  filter(season == 2025) |>
+  filter(season == 2026) |>
   ggplot(aes(x = team_winner, y = steals, fill = team_winner)) +
   geom_boxplot() +
   scale_x_discrete(labels = c("FALSE" = "Lost", "TRUE" = "Won")) +
-  scale_fill_manual(values = c("FALSE" = "tomato", "TRUE" = "steelblue")) +
   labs(x = NULL, y = "Steals", title = "Steals") +
-  theme_bw() +
-  theme(legend.position = "none")
+  theme_bw() 
+
 ```
 
 ```{r}
 wbb |>
-  filter(season == 2025) |>
+  filter(season == 2026) |>
   group_by(team_winner) |>
   summarise(
     avg_efg = mean(effective_fg_pct, na.rm = TRUE),
@@ -306,44 +308,29 @@ wbb |>
   )
 ```
 
-# Champions
+# 3-pointers Over Each Season
 
 ```{r}
 
-# Load schedule for seasons
-schedule <- load_wbb_schedule(seasons = 2008:2026)
-
-# Filter for the National Championship game and identify the winner
-champions <- schedule |> 
-  filter(
-    season_type == 3,
-    grepl("National Championship", notes_headline, ignore.case = TRUE)
-  ) |> 
-  mutate(
-    champion = ifelse(home_winner, home_display_name, away_display_name),
-    runner_up = ifelse(home_winner, away_display_name, home_display_name),
-    final_score = paste0(
-      pmax(home_score, away_score), "-", pmin(home_score, away_score)
-    )
-  ) %>%
-  select(season, game_date, champion, runner_up, final_score, notes_headline)
-
-champions
+threes_each_season <- wbb |> 
+  group_by(season) |> 
+  summarize(attempts_per_game = sum(three_point_field_goals_attempted, na.rm = TRUE) / n())
 
 ```
 
 ```{r}
-champ_games <- load_wbb_schedule(seasons = 2008:2026) |> 
-  filter(season_type == 3,
-         grepl("National Championship", notes_headline, ignore.case = TRUE)) |> 
-  mutate(champion = ifelse(home_winner, home_display_name, away_display_name)) |> 
-  select(season, game_id, game_date, champion, home_display_name, away_display_name)
 
-champ_ids <- champ_games$game_id
-
-
-
-champ_team_box <- load_wbb_team_box(season = 2008:2026) |> 
-  filter(game_id %in% champ_ids) |> 
-  left_join(champ_games %>% select (game_id, champion), by = "game_id")
+threes_each_season |> 
+  pivot_longer(-season, names_to = "measure", values_to = "value") |>
+  mutate(measure = recode(measure,
+                          attempts_per_game = "3-pointers attempted per game")) |>
+  ggplot(aes(x = season, y = value)) +
+  geom_line(color = "#00BFC4", linewidth = 1) +
+  geom_point(color = "#00BFC4", size = 2) +
+  facet_wrap(~measure) +
+  scale_x_continuous(breaks = unique(threes_each_season$season)) +
+  labs(x = "Season", 
+       y = NULL,
+       title = "How 3-point Shooting Has Changed Over Time") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
